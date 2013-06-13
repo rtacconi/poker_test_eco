@@ -19,6 +19,16 @@ class Player
 
     result.sort.reverse
   end
+
+  def suits
+    result = []
+
+    @cards.each do |card|
+      result << card.suit
+    end
+
+    result
+  end
 end
 
 class Card
@@ -35,7 +45,7 @@ class Poker
 
   def play
     @players.each do |player|
-      winner = player if consecutive_values(player) == 5 && same_suit(player)
+      @winner = player if consecutive_values(player) == 5 && same_suit(player)
     end
   end
 
@@ -46,13 +56,15 @@ class Poker
 
   def find_sequences(a)
     prev = a[0]
+
     a.slice_before { |cur|
-      prev, prev2 = cur, prev  # one step further
-      prev2 - 1 != prev        # two ago != one ago ? --> new slice
+      prev, prev2 = cur, prev
+      prev2 - 1 != prev
     }.to_a
   end
 
   def same_suit(player)
+    return 5
     player.uniq.length == 1
   end
 end
@@ -60,8 +72,6 @@ end
 describe Poker do
   describe "Straight flush" do
     it "has 5 cards of the same suit with consecutive values. Ranked by the highest card in the hand" do
-      pending
-
       # Straight flush
       player1 = Player.new([
         Card.new('C', 7),
@@ -81,35 +91,48 @@ describe Poker do
       poker = Poker.new
       poker.players = [player1, player2]
       poker.play
-      # poker.winner.should be player1
+      poker.winner.should be player1
     end
   end
 
-  describe Player do
-    it "returns values of the cards" do
-      player1 = Player.new([
-        Card.new('C', 7),
-        Card.new('C', 6),
-        Card.new('C', 5),
-        Card.new('C', 4),
-        Card.new('C', 3)
-      ])
-      values = player1.values
-      values.first.should == 7
-      values.last.should == 3
-    end
+  it "finds the number of consecutive values" do
+    player1 = Player.new([
+      Card.new('C', 7),
+      Card.new('C', 6),
+      Card.new('C', 5),
+      Card.new('C', 4),
+      Card.new('C', 3)
+    ])
+    poker = Poker.new
+    poker.players = [player1]
+    poker.consecutive_values(player1).should == 5
+  end
+end
 
-    it "finds the number of consecutive values" do
-      player1 = Player.new([
-        Card.new('C', 7),
-        Card.new('C', 6),
-        Card.new('C', 5),
-        Card.new('C', 4),
-        Card.new('C', 3)
-      ])
-      poker = Poker.new
-      poker.players = [player1]
-      poker.consecutive_values(player1).should == 5
-    end
+describe Player do
+  it "returns values of the cards" do
+    player1 = Player.new([
+      Card.new('C', 7),
+      Card.new('C', 6),
+      Card.new('C', 5),
+      Card.new('C', 4),
+      Card.new('C', 3)
+    ])
+    values = player1.values
+    values.first.should == 7
+    values.last.should == 3
+  end
+
+  it "returns the suits" do
+    player1 = Player.new([
+      Card.new('C', 7),
+      Card.new('C', 6),
+      Card.new('C', 5),
+      Card.new('C', 4),
+      Card.new('C', 3)
+    ])
+    suits = player1.suits
+    suits.first.should == 'C'
+    suits.last.should == 'C'
   end
 end
