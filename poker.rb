@@ -35,7 +35,7 @@ class Card
   attr_accessor :suit, :value
 
   def initialize(suit, value)
-    @suite = suit
+    @suit = suit
     @value = value
   end
 end
@@ -87,6 +87,31 @@ describe Poker do
         Card.new('C', 4),
         Card.new('C', 3),
         Card.new('H', 6)
+      ])
+      poker = Poker.new
+      poker.players = [player1, player2]
+      poker.play
+      poker.winner.should be player1
+    end
+  end
+
+  describe "Four of a kind" do
+    it "has 4 cards with the same value. Ranked by the value of the 4 cards." do
+      pending
+      player1 = Player.new([
+        Card.new('C', 7),
+        Card.new('D', 7),
+        Card.new('H', 7),
+        Card.new('S', 7),
+        Card.new('C', 1)
+      ])
+      # Four of a kind
+      player2 = Player.new([
+        Card.new('C', 4),
+        Card.new('D', 4),
+        Card.new('H', 4),
+        Card.new('S', 4),
+        Card.new('C', 1)
       ])
       poker = Poker.new
       poker.players = [player1, player2]
